@@ -4,15 +4,27 @@ from django.db import models
 from django.db import models
 
 
-class Article(models.Model):
+class Category(models.Model):
+    title = models.CharField(max_length=20)
+    subtitle = models.CharField(max_length=20)
+    slug = models.SlugField()
+    thumbnail = models.ImageField()
+
     def __str__(self):
-        return self.text
+        return self.title
 
-    def was_published_recently(self):
-        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
 
+class Article(models.Model):
     title = models.CharField(max_length=200)
-    text = models.TextField()
-    pub_date = models.DateTimeField('date published')
+    slug = models.SlugField()
+    overview = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    content = models.TextField()
+    thumbnail = models.ImageField()
+    categories = models.ManyToManyField(Category)
+    featured = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
 
 
